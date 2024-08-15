@@ -29,14 +29,15 @@ clean:
 ## Lint using flake8 and black (use `make format` to do formatting)
 .PHONY: lint
 lint:
-	flake8 spotify_api_examples
-	isort --check --diff --profile black spotify_api_examples
-	black --check --config pyproject.toml spotify_api_examples
+	poetry run flake8 spotify_api_examples
+	poetry run isort --check --diff --profile black spotify_api_examples
+	poetry run black --check --config pyproject.toml spotify_api_examples
 
 ## Format source code with black
 .PHONY: format
 format:
-	black --config pyproject.toml spotify_api_examples
+	poetry run isort spotify_api_examples
+	poetry run black --config pyproject.toml spotify_api_examples
 
 
 
