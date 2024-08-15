@@ -1,12 +1,28 @@
 # spotify-api-examples
 
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
+## はじめに
 
-Spotify API examples
+Spotify API の使い方の例を書きます。
 
-## Project Organization
+## インストール
+
+1. Spotify Developper に登録します
+2. Dashboard でアプリを登録します
+  - Callback URL は http://localhost:3000/ とします
+3. Dashboard で Client ID と Client Secret を取得します
+4. リポジトリをクローンします
+5. .env.example を .env にコピーして、Client ID と Client Secret を書きます
+6. poetry install コマンドを入力します
+
+## 実行
+
+```shell
+poetry run python -m spotify_api_example.web_api_example
+```
+
+--------
+
+## 参考: ディレクトリとファイルの説明(CCDS由来)
 
 ```
 ├── LICENSE            <- Open-source license if one is chosen
@@ -57,5 +73,4 @@ Spotify API examples
     └── plots.py                <- Code to create visualizations
 ```
 
---------
 
