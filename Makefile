@@ -16,9 +16,14 @@ PYTHON_INTERPRETER = python
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	
 
-
+## Run SurrealDB
+start_db:
+	mkdir -p storage/surrealdb/
+	docker run --rm --pull always -p 8000:8000 --user $(shell id -u) \
+        -v $(shell pwd)/storage/surrealdb:/mydata surrealdb/surrealdb:latest start \
+        --user root --pass secretpass \
+        --log trace file:/mydata/mydatabase.db
 
 ## Delete all compiled Python files
 .PHONY: clean
