@@ -1,10 +1,5 @@
-import os
-
 import spotipy
-from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-
-
 
 
 def get_client_without_auth():
@@ -51,5 +46,4 @@ def main():
 
 
 if __name__ == "__main__":
-    load_dotenv()
     main()
