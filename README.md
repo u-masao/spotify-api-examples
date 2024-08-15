@@ -17,7 +17,7 @@ Spotify API の使い方の例を書きます。
 ## 実行
 
 ```shell
-poetry run python -m spotify_api_example.web_api_example
+poetry run python -m spotify_api_examples.web_api_example
 ```
 
 --------
