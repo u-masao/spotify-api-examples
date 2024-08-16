@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+import mlflow
 import spotipy
 import typer
 from loguru import logger
@@ -51,7 +52,17 @@ def main(
     output_filepath: str = typer.Argument(..., help="出力ファイルへのパス"),
 ):
 
+    # init log
     logger.info("Processing dataset...")
+    mlflow.set_experiment("make_dataset")
+    mlflow.start_run()
+
+    cli_args = dict(
+        input_filepath=input_filepath,
+        output_filepath=output_filepath,
+    )
+    logger.info(f"args: {cli_args}")
+    mlflow.log_params({f"args.{k}": v for k, v in cli_args.items()})
 
     # 認証なしのクライアントを取得
     sp = get_client_without_auth()
@@ -82,6 +93,9 @@ def main(
     # ファイル出力
     Path(output_filepath).parent.mkdir(parents=True, exist_ok=True)
     json.dump(results, open(output_filepath, "w"), indent=4, ensure_ascii=False)
+
+    # logging
+    mlflow.log_params({"output.length": len(results)})
 
     logger.success("Processing dataset complete.")
 
