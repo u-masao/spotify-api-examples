@@ -6,6 +6,8 @@ PROJECT_NAME = spotify-api-examples
 PYTHON_VERSION = 3.10
 PYTHON_INTERPRETER = python
 
+include .env
+
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
@@ -17,13 +19,6 @@ requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
 
-## Run SurrealDB
-start_db:
-	mkdir -p storage/surrealdb/
-	docker run --rm --pull always -p 8000:8000 --user $(shell id -u) \
-        -v $(shell pwd)/storage/surrealdb:/mydata surrealdb/surrealdb:latest start \
-        --user root --pass secretpass \
-        --log trace file:/mydata/mydatabase.db
 
 ## Delete all compiled Python files
 .PHONY: clean
@@ -44,15 +39,23 @@ format:
 	poetry run isort spotify_api_examples
 	poetry run black --config pyproject.toml spotify_api_examples
 
-
-
-
-
-
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
 
+## Run SurrealDB
+start_db:
+	mkdir -p storage/surrealdb/
+	docker run -d --rm --pull always -p "127.0.0.1:8000:8000" --user $(shell id -u) \
+        -v $(shell pwd)/storage/surrealdb:/mydata surrealdb/surrealdb:latest start \
+        --user ${SURREALDB_USER} --pass ${SURREALDB_PASS} \
+        --log trace file:/mydata/mydatabase.db
+
+## run dvc repro
+.PHONE: repro
+repro:
+	poetry run dvc repro
+	git commit dvc.lock -m 'dvc repro' || true
 
 ## Make Dataset
 .PHONY: data
