@@ -16,3 +16,20 @@ stages:
       hash: md5
       md5: 2336575206e592d2d51299617cd3a78c
       size: 759558
+  upload_data_to_surrealdb:
+    cmd: python -m spotify_api_examples.upload_data_to_surrealdb data/raw/dataset.json
+      data/interim/last_upload_status.json
+    deps:
+    - path: data/raw/dataset.json
+      hash: md5
+      md5: 2336575206e592d2d51299617cd3a78c
+      size: 759558
+    - path: spotify_api_examples/upload_data_to_surrealdb.py
+      hash: md5
+      md5: 4ccb60931583ee088138b6d07cec0e10
+      size: 4283
+    outs:
+    - path: data/interim/last_upload_status.json
+      hash: md5
+      md5: 37a6259cc0c1dae299a7866489dff0bd
+      size: 4
