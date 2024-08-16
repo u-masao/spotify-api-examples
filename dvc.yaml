@@ -2,8 +2,10 @@ stages:
   make_dataset:
     cmd: >-
       python -m spotify_api_examples.dataset
-      data/raw/dataset.cloudpickle
+      data/raw/favorite_artists.txt
+      data/raw/dataset.json
     deps:
     - spotify_api_examples/dataset.py
+    - data/raw/favorite_artists.txt
     outs:
     - data/raw/dataset.json
