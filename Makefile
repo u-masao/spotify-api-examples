@@ -61,7 +61,7 @@ repro: check_commit PIPELINE.md requirements_lastrun.txt
 check_commit:
 	git status
 	git diff --exit-code
-	git diff --exit-code -staged
+	git diff --exit-code --staged
 
 ## PIPELINE.md
 PIPELINE.md: dvc.yaml params.yaml
