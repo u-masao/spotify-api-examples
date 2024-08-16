@@ -1,0 +1,18 @@
+schema: '2.0'
+stages:
+  make_dataset:
+    cmd: python -m spotify_api_examples.dataset data/raw/favorite_artists.txt data/raw/dataset.json
+    deps:
+    - path: data/raw/favorite_artists.txt
+      hash: md5
+      md5: c59bd602d45fad646029c4cd58520e5b
+      size: 270
+    - path: spotify_api_examples/dataset.py
+      hash: md5
+      md5: 4897dca7f5f31e9c3de36b260c7ed92b
+      size: 2856
+    outs:
+    - path: data/raw/dataset.json
+      hash: md5
+      md5: 2336575206e592d2d51299617cd3a78c
+      size: 759558
