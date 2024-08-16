@@ -1,28 +1,89 @@
+import json
 from pathlib import Path
 
+import spotipy
 import typer
 from loguru import logger
-from tqdm import tqdm
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 
-from spotify_api_examples.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
+
+def get_client_without_auth():
+    ccm = SpotifyClientCredentials()
+    sp = spotipy.Spotify(client_credentials_manager=ccm)
+    return sp
+
+
+def get_client_with_auth():
+    sp = spotipy.Spotify(
+        auth_manager=SpotifyOAuth(
+            redirect_uri="http://localhost:3000/",
+            scope="user-library-read",
+        )
+    )
+    return sp
+
+
+def search(sp, query: str, limit: int = 20, search_type="track") -> None:
+    results = sp.search(q=query, limit=limit, type=search_type)
+    return results
+
+
+def get_current_user_saved_tracks(sp):
+    results = sp.current_user_saved_tracks()
+    for idx, item in enumerate(results["items"]):
+        track = item["track"]
+        print(idx, track["artists"][0]["name"], " – ", track["name"])
+    return results
+
+
+def load_input_data(input_filepath: str):
+    return list(set(open(input_filepath, "r").read().strip().split("\n")))
+
 
 app = typer.Typer()
 
 
 @app.command()
 def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    input_path: Path = RAW_DATA_DIR / "dataset.csv",
-    output_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    # ----------------------------------------------
+    input_filepath: str = typer.Argument(
+        ..., exists=True, readable=True, help="入力ファイルへのパス"
+    ),
+    output_filepath: str = typer.Argument(..., help="出力ファイルへのパス"),
 ):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
+
     logger.info("Processing dataset...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
+
+    # 認証なしのクライアントを取得
+    sp = get_client_without_auth()
+    # sp = get_client_with_auth()
+
+    results = []
+
+    # load input data
+    favorits = load_input_data(input_filepath)
+    logger.info(f"{favorits=}")
+
+    for query in favorits:
+        # query 毎にループ
+        artists = search(sp, query, limit=1, search_type="artist")
+        results.append({"result": artists, "query": query, "level": 0})
+
+        artist_name = artists["artists"]["items"][0]["name"]
+        artist_id = artists["artists"]["items"][0]["id"]
+
+        logger.info(f"{query=}")
+        logger.info(f"{artist_name=}")
+        logger.info(f"{artist_id=}")
+
+        related_artists = sp.artist_related_artists(artist_id)
+        results.append({"result": related_artists, "query": artist_id, "level": 1})
+        logger.info(f"{related_artists=}")
+
+    # ファイル出力
+    Path(output_filepath).parent.mkdir(parents=True, exist_ok=True)
+    json.dump(results, open(output_filepath, "w"), indent=4, ensure_ascii=False)
+
     logger.success("Processing dataset complete.")
-    # -----------------------------------------
 
 
 if __name__ == "__main__":
