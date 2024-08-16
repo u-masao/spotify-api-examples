@@ -1,4 +1,6 @@
 stages:
+
+  # データセットを作成
   make_dataset:
     cmd: >-
       python -m spotify_api_examples.dataset
@@ -9,3 +11,15 @@ stages:
     - data/raw/favorite_artists.txt
     outs:
     - data/raw/dataset.json
+
+  # データを SurrealDB に登録
+  upload_data_to_surrealdb:
+    cmd: >-
+      python -m spotify_api_examples.upload_data_to_surrealdb
+      data/raw/dataset.json
+      data/interim/last_upload_status.json
+    deps:
+    - spotify_api_examples/upload_data_to_surrealdb.py
+    - data/raw/dataset.json
+    outs:
+    - data/interim/last_upload_status.json
