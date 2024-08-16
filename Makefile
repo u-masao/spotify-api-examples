@@ -44,11 +44,11 @@ format:
 
 ## Run SurrealDB
 start_db:
-	mkdir -p storage/surrealdb/
-	docker run -d --rm --pull always -p "127.0.0.1:8000:8000" --user $(shell id -u) \
-        -v $(shell pwd)/storage/surrealdb:/mydata surrealdb/surrealdb:latest start \
-        --user ${SURREALDB_USER} --pass ${SURREALDB_PASS} \
-        --log trace file:/mydata/mydatabase.db
+	docker compose up -d
+
+## Stop SurrealDB
+stop_db:
+	docker compose stop
 
 ## Run dvc repro
 .PHONY: repro
