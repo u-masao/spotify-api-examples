@@ -46,13 +46,15 @@ async def upload_artists(artists):
             artist_table,
             {
                 "id": "root",
+                "level": 0,
+                "name": "root",
             },
         )
         for artist in artists:
             level = artist["level"]
-            if level == 0:
+            if level == 1:
                 data = artist["result"]["artists"]["items"][0]
-                data["level"] = 0
+                data["level"] = 1
                 artist_id = data["id"]
                 name = data["name"]
                 logger.info(f"upload: {level=} {artist_id=} {name=}")
@@ -61,10 +63,10 @@ async def upload_artists(artists):
 
         for artist in artists:
             level = artist["level"]
-            if level == 1:
+            if level == 2:
                 relation_from = artist["query"]
                 for related_artist in artist["result"]["artists"]:
-                    related_artist["level"] = 1
+                    related_artist["level"] = 2
                     artist_id = related_artist["id"]
                     name = related_artist["name"]
                     logger.info(f"upload: {level=} {artist_id=} {name=}")
@@ -76,11 +78,16 @@ async def upload_artists(artists):
                         db, relation_from, artist_id, artist_relation_table
                     )
 
+        return {
+            "artists": await db.select(artist_table),
+            "artist_relations": await db.select(artist_relation_table),
+        }
+
 
 def upload_data_to_surrealdb(
     artists_info: List[Any],
 ):
-    asyncio.run(upload_artists(artists_info))
+    return asyncio.run(upload_artists(artists_info))
 
 
 def load_input_data(input_filepath: str):

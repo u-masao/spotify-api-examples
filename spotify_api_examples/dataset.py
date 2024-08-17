@@ -82,7 +82,7 @@ def main(
     for query in favorits:
         # query 毎にループ
         artists = search(sp, query, limit=1, search_type="artist")
-        results.append({"result": artists, "query": query, "level": 0})
+        results.append({"result": artists, "query": query, "level": 1})
 
         artist_name = artists["artists"]["items"][0]["name"]
         artist_id = artists["artists"]["items"][0]["id"]
@@ -92,7 +92,7 @@ def main(
         logger.info(f"{artist_id=}")
 
         related_artists = sp.artist_related_artists(artist_id)
-        results.append({"result": related_artists, "query": artist_id, "level": 1})
+        results.append({"result": related_artists, "query": artist_id, "level": 2})
         logger.info(f"{related_artists=}")
 
     # ファイル出力
