@@ -6,6 +6,7 @@ stages:
       python -m spotify_api_examples.dataset
       data/raw/favorite_artists.txt
       data/raw/dataset.json
+      --limit=${limit}
     deps:
     - spotify_api_examples/dataset.py
     - data/raw/favorite_artists.txt
