@@ -5,4 +5,5 @@ flowchart TD
 	node3["upload_data_to_surrealdb"]
 	node1-->node2
 	node2-->node3
+	node4["visualize"]
 ```
