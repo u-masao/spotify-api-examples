@@ -23,3 +23,13 @@ stages:
     - data/raw/dataset.json
     outs:
     - data/interim/last_upload_status.json
+
+  # visualize
+  visualize:
+    cmd: >-
+      python -m spotify_api_examples.visualize
+      data/processed/graph.html
+    deps:
+    - spotify_api_examples/visualize.py
+    outs:
+    - data/processed/graph.html
