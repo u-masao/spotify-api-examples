@@ -25,10 +25,6 @@ async def create_artist_relation(db, relation_from, relation_to, table="artist_r
 
 async def visualize():
     artists, artist_relations = await load_data()
-    # print("==== artists raw")
-    # print(json.dumps(artists, indent=4, ensure_ascii=False))
-    # print("==== artist_relations raw")
-    # print(json.dumps(artist_relations, indent=4, ensure_ascii=False))
 
     graph = nx.Graph()
     for artist in artists:
