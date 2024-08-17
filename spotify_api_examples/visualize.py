@@ -26,7 +26,7 @@ async def visualize(output_filepath: str):
 
     graph = nx.Graph()
     for artist in artists:
-        graph.add_node(artist["id"])
+        graph.add_node(artist["id"], label=artist["name"], group=artist["level"])
     for artist_relation in artist_relations:
         graph.add_edge(artist_relation["from"], artist_relation["to"])
 
