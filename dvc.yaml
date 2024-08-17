@@ -32,5 +32,6 @@ stages:
       data/processed/graph.html
     deps:
     - spotify_api_examples/visualize.py
+    - data/interim/last_upload_status.json
     outs:
     - data/processed/graph.html
