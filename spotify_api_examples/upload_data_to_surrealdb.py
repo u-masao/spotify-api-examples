@@ -11,12 +11,14 @@ from loguru import logger
 from surrealdb import Surreal
 
 
-async def create_artist_relation(db, relation_from, relation_to, table="artist_relation"):
+async def create_artist_relation(
+    db, relation_from, relation_to, table="artist_relation", target_table="artist"
+):
     return await db.create(
         table,
         {
-            "from": relation_from,
-            "to": relation_to,
+            "from": f"{target_table}:{relation_from}",
+            "to": f"{target_table}:{relation_to}",
             "id": f"{relation_from}_{relation_to}",
         },
     )
@@ -40,36 +42,28 @@ async def upload_artists(artists):
         await db.delete(artist_table)
         await db.delete(artist_relation_table)
 
+        await db.create(
+            artist_table,
+            {
+                "id": "root",
+            },
+        )
         for artist in artists:
             if artist["level"] == 0:
                 data = artist["result"]["artists"]["items"][0]
                 artist_id = data["id"]
                 logger.info(f"upload: {artist_id=}")
                 await db.create(artist_table, data)
+                await create_artist_relation(db, "root", artist_id, artist_relation_table)
             if artist["level"] == 1:
+                relation_from = artist["query"]
                 for related_artists in artist["result"]["artists"]:
                     artist_id = related_artists["id"]
                     logger.info(f"upload: {artist_id=}")
                     await db.create(artist_table, related_artists)
-
-        # result = await db.select("artist")
-        # print(json.dumps(result, indent=4, ensure_ascii=False))
-        # print(await db.query("select name from artist"))
-        # print(await db.query("select name from artist:7zsxdMsODmHKTbTB00t9wS"))
-
-        for artist in artists:
-            if artist["level"] == 1:
-                relation_from = artist["query"]
-                for related_artists in artist["result"]["artists"]:
-                    relation_to = related_artists["id"]
                     await create_artist_relation(
-                        db, relation_from, relation_to, artist_relation_table
+                        db, relation_from, artist_id, artist_relation_table
                     )
-
-        # result = await db.select("artist_relation")
-        # print(json.dumps(result, indent=4, ensure_ascii=False))
-        # search_id = "artist_relation:7xIfi0ePXzLGlYO5lFjnvu_58YNdEUQRt7LNccL1icwYL"
-        # print(await db.query(f"select * from {search_id}"))
 
 
 def upload_data_to_surrealdb(
