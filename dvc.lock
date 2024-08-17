@@ -26,8 +26,8 @@ stages:
       size: 759558
     - path: spotify_api_examples/upload_data_to_surrealdb.py
       hash: md5
-      md5: 86100859f6345ab000691d9f984ce05f
-      size: 3523
+      md5: 78de0608e8d7d08af59d9135c83f9843
+      size: 3784
     outs:
     - path: data/interim/last_upload_status.json
       hash: md5
