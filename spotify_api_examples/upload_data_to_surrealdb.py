@@ -52,18 +52,26 @@ async def upload_artists(artists):
             level = artist["level"]
             if level == 0:
                 data = artist["result"]["artists"]["items"][0]
+                data["level"] = 0
                 artist_id = data["id"]
                 name = data["name"]
                 logger.info(f"upload: {level=} {artist_id=} {name=}")
                 await db.create(artist_table, data)
                 await create_artist_relation(db, "root", artist_id, artist_relation_table)
+
+        for artist in artists:
+            level = artist["level"]
             if level == 1:
                 relation_from = artist["query"]
                 for related_artist in artist["result"]["artists"]:
+                    related_artist["level"] = 1
                     artist_id = related_artist["id"]
                     name = related_artist["name"]
                     logger.info(f"upload: {level=} {artist_id=} {name=}")
-                    await db.create(artist_table, related_artist)
+                    try:
+                        await db.create(artist_table, related_artist)
+                    except Exception as e:
+                        logger.info(e)
                     await create_artist_relation(
                         db, relation_from, artist_id, artist_relation_table
                     )
