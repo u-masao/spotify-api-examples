@@ -50,6 +50,7 @@ def main(
         ..., exists=True, readable=True, help="入力ファイルへのパス"
     ),
     output_filepath: str = typer.Argument(..., help="出力ファイルへのパス"),
+    limit: int = typer.Option(0, min=0, help="データの読み込み制限行数"),
 ):
 
     # init log
@@ -72,6 +73,10 @@ def main(
 
     # load input data
     favorits = load_input_data(input_filepath)
+
+    if limit > 0:
+        favorits = favorits[:limit]
+
     logger.info(f"{favorits=}")
 
     for query in favorits:
