@@ -1,8 +1,6 @@
 import asyncio
-import json
 import os
 import sys
-from pathlib import Path
 
 import mlflow
 import networkx as nx
@@ -23,7 +21,7 @@ async def create_artist_relation(db, relation_from, relation_to, table="artist_r
     )
 
 
-async def visualize():
+async def visualize(output_filepath: str):
     artists, artist_relations = await load_data()
 
     graph = nx.Graph()
@@ -32,14 +30,10 @@ async def visualize():
     for artist_relation in artist_relations:
         graph.add_edge(artist_relation["from"], artist_relation["to"])
 
-    # print("==== graph")
-    # print(graph)
-    nt = Network(height="800px", width="100%", notebook=False)
+    nt = Network(height="600px", width="100%", directed=True)
     nt.from_nx(graph)
-    # print("==== network")
-    # print(nt)
-    nt.show("data/processed/graph.html", notebook=False)
-    # nt.show("data/processed/graph.html")
+    nt.show_buttons()
+    nt.write_html(output_filepath)
 
 
 async def load_data():
@@ -83,12 +77,7 @@ def main(
     mlflow.log_params({f"args.{k}": v for k, v in cli_args.items()})
 
     # 処理
-    asyncio.run(visualize())
-
-    # ファイル出力
-    results = []
-    Path(output_filepath).parent.mkdir(parents=True, exist_ok=True)
-    json.dump(results, open(output_filepath, "w"), indent=4, ensure_ascii=False)
+    asyncio.run(visualize(output_filepath))
 
     # logging
     logger.success("Processing dataset complete.")
