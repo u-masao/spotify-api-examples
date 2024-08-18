@@ -10,17 +10,6 @@ from pyvis.network import Network
 from surrealdb import Surreal
 
 
-async def create_artist_relation(db, relation_from, relation_to, table="artist_relation"):
-    return await db.create(
-        table,
-        {
-            "from": relation_from,
-            "to": relation_to,
-            "id": f"{relation_from}_{relation_to}",
-        },
-    )
-
-
 async def visualize(output_filepath: str):
     artists, artist_relations = await load_data()
 
