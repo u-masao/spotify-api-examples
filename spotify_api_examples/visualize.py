@@ -24,13 +24,13 @@ async def create_artist_relation(db, relation_from, relation_to, table="artist_r
 async def visualize(output_filepath: str):
     artists, artist_relations = await load_data()
 
-    graph = nx.Graph()
+    graph = nx.DiGraph()
     for artist in artists:
         graph.add_node(artist["id"], label=artist["name"], group=artist["level"])
     for artist_relation in artist_relations:
         graph.add_edge(artist_relation["from"], artist_relation["to"])
 
-    nt = Network(height="600px", width="100%", directed=True)
+    nt = Network(height="90%", width="90%", directed=True)
     nt.from_nx(graph)
     nt.show_buttons()
     nt.write_html(output_filepath)
