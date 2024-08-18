@@ -6,8 +6,8 @@ stages:
     deps:
     - path: data/raw/favorite_artists.txt
       hash: md5
-      md5: c59bd602d45fad646029c4cd58520e5b
-      size: 270
+      md5: 5cb2d5268387fb5a94a74ab7c1e8b7c0
+      size: 319
     - path: spotify_api_examples/dataset.py
       hash: md5
       md5: e45939830942d42bd69ededbc4d0cf4a
@@ -15,16 +15,16 @@ stages:
     outs:
     - path: data/raw/dataset.json
       hash: md5
-      md5: ee92c3fa4ac244b68c0b06ed0653e942
-      size: 759557
+      md5: 44b11f59e4845281b000805be6649b3e
+      size: 900221
   upload_data_to_surrealdb:
     cmd: python -m spotify_api_examples.upload_data_to_surrealdb data/raw/dataset.json
       data/interim/last_upload_status.json
     deps:
     - path: data/raw/dataset.json
       hash: md5
-      md5: ee92c3fa4ac244b68c0b06ed0653e942
-      size: 759557
+      md5: 44b11f59e4845281b000805be6649b3e
+      size: 900221
     - path: spotify_api_examples/upload_data_to_surrealdb.py
       hash: md5
       md5: cfa7b1b173bb4740a5fbbd32b82ebd64
@@ -32,21 +32,21 @@ stages:
     outs:
     - path: data/interim/last_upload_status.json
       hash: md5
-      md5: c776f377833168c92cc88a300584d875
-      size: 563458
+      md5: 143db1a1b0f26b6ee3ecef2919d40866
+      size: 592469
   visualize:
     cmd: python -m spotify_api_examples.visualize data/processed/graph.html
     deps:
     - path: data/interim/last_upload_status.json
       hash: md5
-      md5: c776f377833168c92cc88a300584d875
-      size: 563458
+      md5: 143db1a1b0f26b6ee3ecef2919d40866
+      size: 592469
     - path: spotify_api_examples/visualize.py
       hash: md5
-      md5: b06c665ae34afddc21b95efa5b750ff1
-      size: 2253
+      md5: c63d2687e11461e741cdb6b96fe17ce4
+      size: 2252
     outs:
     - path: data/processed/graph.html
       hash: md5
-      md5: 05b700bc58da4f86c357dbc87074fcc8
-      size: 93293
+      md5: 1b5cddd161a3d3bee39b00cdffecb2e7
+      size: 101871
