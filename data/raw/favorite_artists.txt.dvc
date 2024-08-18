@@ -1,5 +1,5 @@
 outs:
-- md5: c59bd602d45fad646029c4cd58520e5b
-  size: 270
+- md5: 5cb2d5268387fb5a94a74ab7c1e8b7c0
+  size: 319
   hash: md5
   path: favorite_artists.txt
