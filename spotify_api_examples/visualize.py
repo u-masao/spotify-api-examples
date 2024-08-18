@@ -30,7 +30,7 @@ async def visualize(output_filepath: str):
     for artist_relation in artist_relations:
         graph.add_edge(artist_relation["from"], artist_relation["to"])
 
-    nt = Network(height="90%", width="90%", directed=True)
+    nt = Network(height="900px", width="90%", directed=True)
     nt.from_nx(graph)
     nt.show_buttons()
     nt.write_html(output_filepath)
