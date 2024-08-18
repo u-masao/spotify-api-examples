@@ -43,10 +43,10 @@ stages:
       size: 592469
     - path: spotify_api_examples/visualize.py
       hash: md5
-      md5: c63d2687e11461e741cdb6b96fe17ce4
-      size: 2252
+      md5: db26fd417c945a6b589080e4f80bdca9
+      size: 2254
     outs:
     - path: data/processed/graph.html
       hash: md5
-      md5: 1b5cddd161a3d3bee39b00cdffecb2e7
-      size: 101871
+      md5: e4a4a1e5a6a25cdc2eefe5723cdfc807
+      size: 101875
