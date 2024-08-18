@@ -4,6 +4,7 @@ import sys
 
 import mlflow
 import networkx as nx
+import numpy as np
 import typer
 from loguru import logger
 from pyvis.network import Network
@@ -13,16 +14,32 @@ from surrealdb import Surreal
 async def visualize(output_filepath: str):
     artists, artist_relations = await load_data()
 
-    graph = nx.DiGraph()
+    genre_group = 20
+    artist_graph = nx.DiGraph()
+    genre_graph = nx.Graph()
+
     for artist in artists:
-        graph.add_node(artist["id"], label=artist["name"], group=artist["level"])
+        size = 10 * np.log10(artist.get("popularity", 10))  # 0 to 100
+        # size = artist.get('followers', {'total':10})['total']
+        artist_graph.add_node(artist["id"], label=artist["name"], group=artist["level"], size=size)
+        genre_graph.add_node(artist["id"], label=artist["name"], group=artist["level"], size=size)
+        for genre in artist.get("genres", []):
+            genre_graph.add_node(genre, label=genre, group=genre_group)
+            genre_graph.add_edge(genre, artist["id"])
+
     for artist_relation in artist_relations:
-        graph.add_edge(artist_relation["from"], artist_relation["to"])
+        artist_graph.add_edge(artist_relation["from"], artist_relation["to"])
+        # genre_graph.add_edge(artist_relation["from"], artist_relation["to"])
 
     nt = Network(height="900px", width="90%", directed=True)
-    nt.from_nx(graph)
+    nt.from_nx(artist_graph)
     nt.show_buttons()
     nt.write_html(output_filepath)
+
+    nt = Network(height="900px", width="90%", directed=True)
+    nt.from_nx(genre_graph)
+    nt.show_buttons()
+    nt.write_html("data/processed/genre.html")
 
 
 async def load_data():
@@ -39,10 +56,8 @@ async def load_data():
         artist_table = "artist"
         artist_relation_table = "artist_relation"
 
-        # delete db
         artist = await db.select(artist_table)
         artist_relation = await db.select(artist_relation_table)
-
     return artist, artist_relation
 
 
